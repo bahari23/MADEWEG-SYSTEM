@@ -94,7 +94,7 @@ P.login=()=>`<div class="card login"><h1>Sign in</h1><p style="color:var(--mut);
 <div class="note" style="max-width:420px;margin:0 auto">Prototype: any details with an 8+ character password open the sample dashboards. The real system will use secure accounts and two-step sign-in for leaders.</div>`;
 P.login.init=()=>{let role="member";const set=r=>{role=r;$("#sm").className=r=="member"?"on":"";$("#sa").className=r=="admin"?"on":"";$("#mfa").hidden=r!="admin";$("#ll").textContent=r=="admin"?"Official email":"Membership number or phone";$("#lu").placeholder=r=="admin"?"secretary@madeweg.example":"MDW-0001"};
 $("#sm").onclick=()=>set("member");$("#sa").onclick=()=>set("admin");
-$("#lf").onsubmit=e=>{e.preventDefault();if(role=="admin"&&!/^\d{6}$/.test($("#lc").value))return msg("lm","Enter the 6-digit security code to continue.",1);location.hash=role=="admin"?"admin":"member"};
+$("#lf").onsubmit=e=>{e.preventDefault();if(role=="admin"&&!/^\d{6}$/.test($("#lc").value))return msg("lm","Enter the 6-digit security code to continue.",1);location.href=role=="admin"?"MADEWEG_Admin_Dashboard.html":"MADEWEG_Member_Account.html"};
 $("#fp").onclick=()=>toast("In the live system a reset code is sent by SMS.")};
 
 P.register=()=>`<h1>Member registration</h1><p style="color:var(--mut);margin-top:0">Fill in each section. Membership becomes active only after review and approval.</p>
@@ -146,6 +146,7 @@ P.member=()=>`<h1>Karibu, Amina</h1>
 P.member.init=()=>{document.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>toast(b.dataset.t));$("#pay").onclick=()=>{const p=prompt("Phone number for the M-Pesa request (KES 250):","07");if(p&&/^(07|01)\d{8}$/.test(p))toast("Payment request sent to "+p+". Your balance updates after M-Pesa confirms.");else if(p)toast("Enter a valid 10-digit phone number.")}};
 
 function render(){const k=location.hash.slice(1)||"login",key=P[k]?k:"login";
+if(k=="admin"||k=="member"){location.replace(k=="admin"?"MADEWEG_Admin_Dashboard.html":"MADEWEG_Member_Account.html");return}
 $("#hdr").innerHTML=nav(key=="admin"?"admin":key=="member"?"member":"");
 $("#view").innerHTML=P[key]();P[key].init&&P[key].init();scrollTo(0,0)}
 addEventListener("hashchange",render);render();
