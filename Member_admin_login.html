@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MADEWEG Portal (Prototype)</title>
+<style>
+:root{--navy:#0f2a4a;--navy2:#17406e;--green:#1f6b46;--gold:#c9a227;--bg:#e9edf2;--card:#fff;--ink:#1b2430;--mut:#5d6877;--line:#dde2e9;--bad:#b3261e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1320;--card:#13233a;--ink:#e8edf4;--mut:#9aa8ba;--line:#26384f}}
+:root[data-theme="dark"]{--bg:#0a1320;--card:#13233a;--ink:#e8edf4;--mut:#9aa8ba;--line:#26384f}
+*{box-sizing:inherit}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin:0 0 .4rem}
+h1{font-size:1.5rem}h2{font-size:1.05rem}
+.hdr{background:var(--navy);color:#fff;padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:3px solid var(--gold)}
+.hdr b{font-family:Georgia,serif;font-size:1.25rem;letter-spacing:.5px}
+.hdr small{color:#c7d2e2;display:block;font-size:.7rem}
+.tabs{display:flex;gap:6px;flex:1;flex-wrap:wrap}
+.tabs a,.hdr .out{color:#fff;text-decoration:none;padding:6px 12px;border-radius:99px;background:var(--navy2);font-size:.85rem;border:1px solid rgba(255,255,255,.15)}
+.tabs a.on{background:var(--gold);color:#14202f;font-weight:700}
+wrap,.wrap{display:block}
+main{max-width:1100px;margin:0 auto;padding:16px 14px 40px}
+.note{background:rgba(201,162,39,.16);border-left:4px solid var(--gold);padding:8px 12px;border-radius:4px;font-size:.85rem;margin-bottom:14px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:12px}
+.g2{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat b{display:block;font-size:1.55rem;font-family:Georgia,serif;color:var(--navy)}
+@media (prefers-color-scheme:dark){.stat b{color:#fff}}
+.stat span{color:var(--mut);font-size:.8rem}.stat i{font-style:normal;font-size:.75rem;color:var(--green)}
+.stat.r b{color:var(--bad)}.stat.g b{color:var(--green)}
+label{display:block;font-size:.82rem;color:var(--mut);margin-bottom:3px}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;font:inherit;background:var(--card);color:var(--ink)}
+input:focus,select:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.row{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:10px}
+.btn{background:var(--green);color:#fff;border:0;padding:8px 14px;border-radius:6px;font:inherit;font-weight:600;cursor:pointer}
+.btn.navy{background:var(--navy2)}.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}.btn.bad{background:var(--bad)}
+.btn.sm{padding:4px 10px;font-size:.8rem}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.msg{margin-top:10px;padding:10px 12px;border-radius:6px;background:var(--bg);border-left:4px solid var(--green);font-size:.9rem}
+.msg.no{border-color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:.87rem}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line)}
+th{color:var(--mut);background:var(--bg);font-weight:600}
+.n{text-align:right;font-variant-numeric:tabular-nums}
+.ov{overflow-x:auto}
+.tag{display:inline-block;padding:1px 8px;border-radius:99px;font-size:.74rem;font-weight:700}
+.t-g{background:rgba(31,107,70,.16);color:var(--green)}.t-y{background:rgba(201,162,39,.25);color:#7a5a00}.t-r{background:rgba(179,38,30,.15);color:var(--bad)}
+@media (prefers-color-scheme:dark){.t-g{color:#6fd3a0}.t-y{color:#e8c65a}.t-r{color:#ff9a92}}
+.hb{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:.85rem}
+.hb em{width:104px;font-style:normal;flex:none}.hb div{height:16px;border-radius:3px;background:var(--navy2)}.hb:nth-child(odd) div{background:var(--green)}.hb:first-of-type div{background:var(--gold)}
+.donut{width:130px;height:130px;border-radius:50%;margin:auto;display:grid;place-items:center}
+.donut span{background:var(--card);width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font:700 1.2rem Georgia,serif}
+.leg{font-size:.82rem;margin-top:8px}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.mcard{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:12px;padding:16px;display:flex;gap:14px;flex-wrap:wrap;border:2px solid var(--gold)}
+.mcard .av{width:64px;height:64px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font:700 1.5rem Georgia,serif;flex:none}
+.mcard h2{color:#fff;margin:0;font-size:1.35rem}.mcard small{color:#c7d2e2}
+.mcard .qr{background:#fff;padding:6px;border-radius:6px;margin-left:auto;text-align:center;color:#444;font-size:.6rem}
+.mcard .st{display:inline-block;margin-top:6px;background:var(--green);padding:2px 10px;border-radius:99px;font-size:.78rem;font-weight:700}
+.login{max-width:420px;margin:30px auto}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.seg button{flex:1;padding:8px;border:0;background:transparent;color:var(--ink);font:inherit;cursor:pointer}.seg button.on{background:var(--navy);color:#fff}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 16px;border-radius:8px;border:1px solid var(--gold);z-index:9;max-width:90vw}
+a.lnk{color:var(--green);cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<div id="hdr"></div>
+<main id="view"></main>
+<script>
+const $=s=>document.querySelector(s),kes=n=>"KES "+Math.round(n).toLocaleString("en-KE");
+const VIL=["Mapawa Centre","Benesi","Mto Mkuu","Forozani","Jaribuni"];
+const opts=a=>a.map(x=>`<option>${x}</option>`).join("");
+let toastT;const toast=t=>{document.querySelectorAll(".toast").forEach(e=>e.remove());document.body.insertAdjacentHTML("beforeend",`<div class="toast" role="status">${t}</div>`);clearTimeout(toastT);toastT=setTimeout(()=>document.querySelectorAll(".toast").forEach(e=>e.remove()),3200)};
+const msg=(id,t,bad)=>{const e=$("#"+id);e.className="msg"+(bad?" no":"");e.innerHTML=t};
+const stat=(v,l,s="",c="")=>`<div class="card stat ${c}"><b>${v}</b><span>${l}</span>${s?`<br><i>${s}</i>`:""}</div>`;
+const donut=(parts)=>{let a=0;const g=parts.map(p=>{const s=a;a+=p[0];return `${p[1]} ${s}% ${a}%`}).join(",");return `<div class="donut" style="background:conic-gradient(${g})"><span>${parts[0][0]}%</span></div><div class="leg">${parts.map(p=>`<div><i style="background:${p[1]}"></i>${p[2]}</div>`).join("")}</div>`};
+const qr=()=>{let s="",r=7;for(let y=0;y<21;y++)for(let x=0;x<21;x++){r=(r*9301+49297)%233280;const f=(x<7&&y<7)||(x>13&&y<7)||(x<7&&y>13);const on=f?(x%14<7&&y%14<7||x>13)&&(([0,6].includes(x%14)||[0,6].includes(y%14))||(x%14>1&&x%14<5&&y%14>1&&y%14<5)):r/233280>.5;if(on)s+=`<rect x="${x}" y="${y}" width="1" height="1"/>`}return `<svg viewBox="0 0 21 21" width="84" height="84" fill="#111">${s}</svg>`};
+
+/* sample data (in memory only) */
+let APPS=[["APP-0031","Peter Mwatela","Forozani","Born in Mapawa area","Complete"],["APP-0032","Grace Njeri","Benesi","Resident","Missing: spouse ID"],["APP-0033","Said Omar","Jaribuni","Resident","Complete"],["APP-0034","Lucy Achieng","Mapawa Centre","Resident","Complete"]];
+let ACTIVE=211;
+
+const nav=(role)=>{const t=role=="admin"?[["admin","Overview"],["register","Register member"]]:[["member","My account"]];
+return `<div class="hdr"><div><b>MADEWEG</b><small>Umoja Wetu, Maendeleo Yetu, Ustawi wa Jamii Yetu</small></div>${role?`<div class="tabs">${t.map(x=>`<a href="#${x[0]}" class="${location.hash.slice(1)==x[0]?"on":""}">${x[1]}</a>`).join("")}</div><a class="out" href="#login">Sign out</a>`:""}</div>`};
+
+const P={};
+P.login=()=>`<div class="card login"><h1>Sign in</h1><p style="color:var(--mut);margin-top:0">Mapawa Delegates Welfare Group</p>
+<div class="seg"><button class="on" id="sm">Member</button><button id="sa">Leader / Admin</button></div>
+<form id="lf"><div class="row" style="grid-template-columns:1fr"><div><label id="ll">Membership number or phone</label><input id="lu" autocomplete="username" required placeholder="MDW-0001"></div><div><label>Password</label><input id="lp" type="password" autocomplete="current-password" required minlength="8"></div></div>
+<p id="mfa" hidden><label>6-digit security code (required for leaders)</label><input id="lc" inputmode="numeric" maxlength="6"></p>
+<button class="btn" style="width:100%">Sign in</button></form><div id="lm"></div>
+<p style="font-size:.85rem">New to MADEWEG? <a class="lnk" href="#register">Register as a member</a><br>Forgot password? <a class="lnk" id="fp">Reset by SMS</a></p></div>
+<div class="note" style="max-width:420px;margin:0 auto">Prototype: any details with an 8+ character password open the sample dashboards. The real system will use secure accounts and two-step sign-in for leaders.</div>`;
+P.login.init=()=>{let role="member";const set=r=>{role=r;$("#sm").className=r=="member"?"on":"";$("#sa").className=r=="admin"?"on":"";$("#mfa").hidden=r!="admin";$("#ll").textContent=r=="admin"?"Official email":"Membership number or phone";$("#lu").placeholder=r=="admin"?"secretary@madeweg.example":"MDW-0001"};
+$("#sm").onclick=()=>set("member");$("#sa").onclick=()=>set("admin");
+$("#lf").onsubmit=e=>{e.preventDefault();if(role=="admin"&&!/^\d{6}$/.test($("#lc").value))return msg("lm","Enter the 6-digit security code to continue.",1);location.hash=role=="admin"?"admin":"member"};
+$("#fp").onclick=()=>toast("In the live system a reset code is sent by SMS.")};
+
+P.register=()=>`<h1>Member registration</h1><p style="color:var(--mut);margin-top:0">Fill in each section. Membership becomes active only after review and approval.</p>
+<form id="rf"><div class="card" style="margin-bottom:12px"><h2>1. Personal information</h2>
+<div class="row"><div><label>Full name</label><input required></div><div><label>National ID number</label><input required inputmode="numeric"></div><div><label>Gender</label><select>${opts(["Female","Male"])}</select></div><div><label>Date of birth</label><input type="date" id="dob" required></div></div>
+<div class="row"><div><label>Telephone</label><input type="tel" required></div><div><label>WhatsApp number</label><input type="tel"></div><div><label>Email</label><input type="email"></div><div><label>Occupation</label><input></div></div></div>
+<div class="card" style="margin-bottom:12px"><h2>2. Eligibility</h2><div class="row"><div><label>Village of origin</label><select id="vo"><option value="">Select…</option>${opts(VIL)}<option value="b">Born in Mapawa area, other place</option><option value="x">None of these</option></select></div><div><label>Current village of residence</label><select id="vr"><option value="">Select…</option>${opts(VIL)}<option value="o">Outside recognised villages</option></select></div></div></div>
+<div class="card" style="margin-bottom:12px"><h2>3. Family and beneficiaries</h2><div id="ben"></div><button type="button" class="btn ghost sm" id="addb">Add family member</button></div>
+<div class="card" style="margin-bottom:12px"><h2>4. Documents</h2><div class="row"><div><label>National ID (photo or scan)</label><input type="file" accept="image/*,.pdf"></div><div><label>Spouse ID</label><input type="file" accept="image/*,.pdf"></div><div><label>Children’s birth certificates</label><input type="file" accept="image/*,.pdf" multiple></div></div></div>
+<div class="card" style="margin-bottom:12px"><h2>5. Registration payment</h2><table><tr><td>Registration fee (non-refundable)</td><td class="n">KES 200</td></tr><tr><td>Hazina Fund initial contribution (non-refundable)</td><td class="n">KES 400</td></tr><tr><th>Total by M-Pesa</th><th class="n">KES 600</th></tr></table>
+<label style="margin-top:10px"><input type="checkbox" required style="width:auto"> I agree to MADEWEG storing my details to run the group, as the Data Protection Act, 2019 allows.</label></div>
+<button class="btn">Check eligibility and submit</button> <a class="lnk" href="#login" style="margin-left:10px">Back to sign in</a><div id="rm"></div></form>`;
+P.register.init=()=>{let n=0;$("#addb").onclick=()=>{n++;$("#ben").insertAdjacentHTML("beforeend",`<div class="row"><div><label>Name</label><input></div><div><label>Relationship</label><select>${opts(["Husband or wife","Father","Mother","Guardian","Child","Next of kin"])}</select></div><div><label>Date of birth</label><input type="date"></div><div><label>ID or birth certificate no.</label><input></div></div>`)};$("#addb").click();
+$("#rf").onsubmit=e=>{e.preventDefault();const d=new Date($("#dob").value),t=new Date();let age=t.getFullYear()-d.getFullYear();if(t<new Date(t.getFullYear(),d.getMonth(),d.getDate()))age--;
+const res=VIL.includes($("#vr").value),born=$("#vo").value&&$("#vo").value!="x";
+if(age<18)return msg("rm","Not eligible yet: applicants must be at least 18. Your age is "+age+".",1);
+if(!res&&!born)return msg("rm","Not eligible: you must live in one of the five villages, or have been born in Mapawa or its surrounding areas.",1);
+msg("rm","<b>Application APP-0035 received.</b> Eligibility check passed. A KES 600 payment request will be sent to your phone by M-Pesa, then the Secretary and your village leader will review it. You will get an SMS when a decision is made.")}};
+
+P.admin=()=>`<h1>Administrator dashboard</h1>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 12px"><div><label>Village</label><select id="af">${opts(["All villages",...VIL])}</select></div><div><label>Financial year</label><select><option>2026 (28 Dec 2025 – 27 Dec 2026)</option><option>2025</option></select></div></div>
+<div class="grid" id="as"></div>
+<div class="g2"><div class="card"><h2>Members by village</h2><div id="vb"></div></div>
+<div class="card"><h2>Contributions this period</h2>${donut([[72,"#1f6b46","Paid KES 148,800"],[14,"#c9a227","Reminded KES 28,900"],[14,"#b3261e","Overdue KES 29,000"]])}</div></div>
+<div class="card" style="margin-bottom:12px"><h2>Pending applications</h2><div class="ov"><table><thead><tr><th>Ref</th><th>Name</th><th>Village</th><th>Eligibility basis</th><th>Documents</th><th>Action</th></tr></thead><tbody id="ap"></tbody></table></div><div id="am"></div></div>
+<div class="g2"><div class="card"><h2>Fund balances (kept separate)</h2><table><tr><td>Hazina Fund</td><td class="n"><b>${kes(186400)}</b></td></tr><tr><td>Welfare Fund</td><td class="n"><b>${kes(342900)}</b></td></tr><tr><td>Pending approvals</td><td class="n"><span class="tag t-y">5 withdrawals</span></td></tr></table></div>
+<div class="card"><h2>Recent transactions</h2><div class="ov"><table><tr><th>Ref</th><th>Type</th><th class="n">KES</th><th>Status</th></tr><tr><td>TX-0412</td><td>Funeral levy</td><td class="n">200</td><td><span class="tag t-g">Verified</span></td></tr><tr><td>TX-0411</td><td>Registration</td><td class="n">600</td><td><span class="tag t-g">Verified</span></td></tr><tr><td>TX-0410</td><td>Fine</td><td class="n">50</td><td><span class="tag t-y">Pending</span></td></tr><tr><td>TX-0409</td><td>Hazina</td><td class="n">400</td><td><span class="tag t-r">Failed</span></td></tr></table></div></div></div>`;
+P.admin.init=()=>{const base={"Mapawa Centre":[84,72,3],"Benesi":[52,44,2],"Mto Mkuu":[41,35,2],"Forozani":[37,32,1],"Jaribuni":[34,28,1]};
+const draw=()=>{const v=$("#af").value,all=v=="All villages",tot=all?[248,ACTIVE,APPS.length]:[base[v][0],base[v][1],base[v][2]];
+$("#as").innerHTML=stat(tot[0],"Registered members","+6 this month")+stat(tot[1],"Active members","","g")+stat(all?14:2,"Suspended")+stat(all?APPS.length:Math.min(APPS.filter(a=>a[2]==v).length,9),"Pending registrations","","")+stat(kes(all?41250:8200),"Outstanding contributions","","r")+stat(all?3:1,"Funeral cases open")+stat(all?2:0,"At three missed periods");
+$("#vb").innerHTML=Object.entries(base).map(([k,x])=>`<div class="hb"><em>${k}</em><div style="width:${x[0]*2.2}px"></div>${x[0]}</div>`).join("");
+$("#ap").innerHTML=APPS.filter(a=>all||a[2]==v).map(a=>`<tr><td>${a[0]}</td><td>${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td><td><span class="tag ${a[4]=="Complete"?"t-g":"t-y"}">${a[4]}</span></td><td><div class="acts" style="margin:0"><button class="btn sm" data-a="ok" data-r="${a[0]}"${a[4]!="Complete"?" disabled":""}>Approve</button><button class="btn navy sm" data-a="doc" data-r="${a[0]}">Ask for documents</button><button class="btn bad sm" data-a="no" data-r="${a[0]}">Reject</button></div></td></tr>`).join("")||`<tr><td colspan=6>No pending applications. New registrations appear here.</td></tr>`};
+$("#af").onchange=draw;draw();
+$("#ap").onclick=e=>{const b=e.target.closest("button");if(!b)return;const r=b.dataset.r,a=APPS.find(x=>x[0]==r);
+if(b.dataset.a=="ok"){APPS=APPS.filter(x=>x[0]!=r);ACTIVE++;toast(a[1]+" approved. Membership number issued and SMS sent.")}
+else if(b.dataset.a=="doc"){a[4]="Missing: requested";toast("Document request sent to "+a[1])}
+else{const why=prompt("Reason for rejecting "+a[1]+" (the applicant will see this):");if(!why)return;APPS=APPS.filter(x=>x[0]!=r);toast("Rejected with reason recorded.")}
+draw()}};
+
+P.member=()=>`<h1>Karibu, Amina</h1>
+<div class="mcard"><div class="av">AM</div><div><h2>Amina Mwakio</h2><small>MDW-0001 · Mapawa Centre · member since 12/03/2019</small><br><span class="st">Active</span> <small>&nbsp;Valid to 27 Dec 2026</small></div><div class="qr">${qr()}<br>placeholder scan code</div></div>
+<div class="acts"><button class="btn" id="pay">Pay with M-Pesa</button><button class="btn navy" data-t="Receipt downloaded as PDF.">Download receipt</button><button class="btn navy" data-t="Welfare claim form opened.">Submit welfare claim</button><button class="btn ghost" data-t="Update request sent to the Secretary for verification.">Update my details</button><button class="btn ghost" data-t="Suggestion form opened.">Send a suggestion</button></div>
+<div class="grid">${stat(kes(400),"Hazina Fund contributed (non-refundable)")+stat(kes(2600),"Welfare contributions to date","","g")+stat(kes(250),"Owing now","200 levy + 50 fine","r")+stat("Yes","Eligible to vote","","g")}</div>
+<div class="g2"><div class="card"><h2>What I owe</h2><table><tr><td>Funeral levy (due 05 Nov)</td><td class="n">200</td></tr><tr><td>Late fine (25%)</td><td class="n">50</td></tr><tr><th>Total</th><th class="n">KES 250</th></tr></table><p style="font-size:.82rem;color:var(--mut)">Think the fine is wrong? <a class="lnk" data-t="Fine review request sent to the committee.">Ask for a review</a></p></div>
+<div class="card"><h2>My payment record</h2>${donut([[80,"#1f6b46","Paid on time"],[20,"#b3261e","Overdue"]])}</div></div>
+<div class="g2"><div class="card"><h2>My family and beneficiaries</h2><div class="ov"><table><tr><th>Name</th><th>Relationship</th><th>Status</th></tr><tr><td>John Mwakio</td><td>Husband</td><td><span class="tag t-g">Verified</span></td></tr><tr><td>Mary Mwakio</td><td>Mother</td><td><span class="tag t-g">Verified</span></td></tr><tr><td>Zawadi Mwakio</td><td>Child</td><td><span class="tag t-y">Birth cert. missing</span></td></tr></table></div><p><button class="btn ghost sm" data-t="Change request sent for administrator verification.">Request a change</button></p></div>
+<div class="card"><h2>Recent payments</h2><div class="ov"><table><tr><th>Date</th><th>For</th><th class="n">KES</th><th></th></tr><tr><td>02 Oct</td><td>Funeral levy</td><td class="n">200</td><td><a class="lnk" data-t="Receipt R-0233 downloaded.">Receipt</a></td></tr><tr><td>04 Aug</td><td>Medical levy</td><td class="n">200</td><td><a class="lnk" data-t="Receipt R-0198 downloaded.">Receipt</a></td></tr><tr><td>12 Mar 2019</td><td>Registration + Hazina</td><td class="n">600</td><td><a class="lnk" data-t="Receipt R-0001 downloaded.">Receipt</a></td></tr></table></div></div></div>
+<div class="card"><h2>Notices</h2><p style="margin:.2rem 0">Full Committee Meeting: 5 Dec 2026 · Annual General Meeting: 27 Dec 2026</p><p style="margin:.2rem 0;color:var(--mut)">You only see your own records here. Medical and confidential case details are never shown to other members.</p></div>`;
+P.member.init=()=>{document.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>toast(b.dataset.t));$("#pay").onclick=()=>{const p=prompt("Phone number for the M-Pesa request (KES 250):","07");if(p&&/^(07|01)\d{8}$/.test(p))toast("Payment request sent to "+p+". Your balance updates after M-Pesa confirms.");else if(p)toast("Enter a valid 10-digit phone number.")}};
+
+function render(){const k=location.hash.slice(1)||"login",key=P[k]?k:"login";
+$("#hdr").innerHTML=nav(key=="admin"?"admin":key=="member"?"member":"");
+$("#view").innerHTML=P[key]();P[key].init&&P[key].init();scrollTo(0,0)}
+addEventListener("hashchange",render);render();
+</script>
+</body>
+</html>
