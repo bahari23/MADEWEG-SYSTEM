@@ -91,9 +91,9 @@ P.login=()=>`<div class="card login"><h1>Sign in</h1><p style="color:var(--mut);
 <p id="mfa" hidden><label>6-digit security code (required for leaders)</label><input id="lc" inputmode="numeric" maxlength="6"></p>
 <button class="btn" style="width:100%">Sign in</button></form><div id="lm"></div>
 <p style="font-size:.85rem">New to MADEWEG? <a class="lnk" href="#register">Register as a member</a><br>Forgot password? <a class="lnk" id="fp">Reset by SMS</a></p></div>
-<div class="note" style="max-width:420px;margin:0 auto">Prototype: any details with an 8+ character password open the sample dashboards. The real system will use secure accounts and two-step sign-in for leaders.</div>`;
+<div class="note" style="max-width:420px;margin:0 auto">Prototype: any details with an 8+ character password open the sample member account or admin dashboard. The real system will use secure accounts and two-step sign-in for leaders.</div>`;
 P.login.init=()=>{let role="member";const set=r=>{role=r;$("#sm").className=r=="member"?"on":"";$("#sa").className=r=="admin"?"on":"";$("#mfa").hidden=r!="admin";$("#ll").textContent=r=="admin"?"Official email":"Membership number or phone";$("#lu").placeholder=r=="admin"?"secretary@madeweg.example":"MDW-0001"};
-$("#sm").onclick=()=>set("member");$("#sa").onclick=()=>set("admin");
+$("#sm").onclick=()=>set("member");$("#sa").onclick=()=>set("admin");if(/[?&]role=admin/.test(location.search))set("admin");
 $("#lf").onsubmit=e=>{e.preventDefault();if(role=="admin"&&!/^\d{6}$/.test($("#lc").value))return msg("lm","Enter the 6-digit security code to continue.",1);location.href=role=="admin"?"MADEWEG_Admin_Dashboard.html":"MADEWEG_Member_Account.html"};
 $("#fp").onclick=()=>toast("In the live system a reset code is sent by SMS.")};
 
@@ -112,42 +112,11 @@ $("#rf").onsubmit=e=>{e.preventDefault();const d=new Date($("#dob").value),t=new
 const res=VIL.includes($("#vr").value),born=$("#vo").value&&$("#vo").value!="x";
 if(age<18)return msg("rm","Not eligible yet: applicants must be at least 18. Your age is "+age+".",1);
 if(!res&&!born)return msg("rm","Not eligible: you must live in one of the five villages, or have been born in Mapawa or its surrounding areas.",1);
-msg("rm","<b>Application APP-0035 received.</b> Eligibility check passed. A KES 600 payment request will be sent to your phone by M-Pesa, then the Secretary and your village leader will review it. You will get an SMS when a decision is made.")}};
-
-P.admin=()=>`<h1>Administrator dashboard</h1>
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 12px"><div><label>Village</label><select id="af">${opts(["All villages",...VIL])}</select></div><div><label>Financial year</label><select><option>2026 (28 Dec 2025 – 27 Dec 2026)</option><option>2025</option></select></div></div>
-<div class="grid" id="as"></div>
-<div class="g2"><div class="card"><h2>Members by village</h2><div id="vb"></div></div>
-<div class="card"><h2>Contributions this period</h2>${donut([[72,"#1f6b46","Paid KES 148,800"],[14,"#c9a227","Reminded KES 28,900"],[14,"#b3261e","Overdue KES 29,000"]])}</div></div>
-<div class="card" style="margin-bottom:12px"><h2>Pending applications</h2><div class="ov"><table><thead><tr><th>Ref</th><th>Name</th><th>Village</th><th>Eligibility basis</th><th>Documents</th><th>Action</th></tr></thead><tbody id="ap"></tbody></table></div><div id="am"></div></div>
-<div class="g2"><div class="card"><h2>Fund balances (kept separate)</h2><table><tr><td>Hazina Fund</td><td class="n"><b>${kes(186400)}</b></td></tr><tr><td>Welfare Fund</td><td class="n"><b>${kes(342900)}</b></td></tr><tr><td>Pending approvals</td><td class="n"><span class="tag t-y">5 withdrawals</span></td></tr></table></div>
-<div class="card"><h2>Recent transactions</h2><div class="ov"><table><tr><th>Ref</th><th>Type</th><th class="n">KES</th><th>Status</th></tr><tr><td>TX-0412</td><td>Funeral levy</td><td class="n">200</td><td><span class="tag t-g">Verified</span></td></tr><tr><td>TX-0411</td><td>Registration</td><td class="n">600</td><td><span class="tag t-g">Verified</span></td></tr><tr><td>TX-0410</td><td>Fine</td><td class="n">50</td><td><span class="tag t-y">Pending</span></td></tr><tr><td>TX-0409</td><td>Hazina</td><td class="n">400</td><td><span class="tag t-r">Failed</span></td></tr></table></div></div></div>`;
-P.admin.init=()=>{const base={"Mapawa Centre":[84,72,3],"Benesi":[52,44,2],"Mto Mkuu":[41,35,2],"Forozani":[37,32,1],"Jaribuni":[34,28,1]};
-const draw=()=>{const v=$("#af").value,all=v=="All villages",tot=all?[248,ACTIVE,APPS.length]:[base[v][0],base[v][1],base[v][2]];
-$("#as").innerHTML=stat(tot[0],"Registered members","+6 this month")+stat(tot[1],"Active members","","g")+stat(all?14:2,"Suspended")+stat(all?APPS.length:Math.min(APPS.filter(a=>a[2]==v).length,9),"Pending registrations","","")+stat(kes(all?41250:8200),"Outstanding contributions","","r")+stat(all?3:1,"Funeral cases open")+stat(all?2:0,"At three missed periods");
-$("#vb").innerHTML=Object.entries(base).map(([k,x])=>`<div class="hb"><em>${k}</em><div style="width:${x[0]*2.2}px"></div>${x[0]}</div>`).join("");
-$("#ap").innerHTML=APPS.filter(a=>all||a[2]==v).map(a=>`<tr><td>${a[0]}</td><td>${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td><td><span class="tag ${a[4]=="Complete"?"t-g":"t-y"}">${a[4]}</span></td><td><div class="acts" style="margin:0"><button class="btn sm" data-a="ok" data-r="${a[0]}"${a[4]!="Complete"?" disabled":""}>Approve</button><button class="btn navy sm" data-a="doc" data-r="${a[0]}">Ask for documents</button><button class="btn bad sm" data-a="no" data-r="${a[0]}">Reject</button></div></td></tr>`).join("")||`<tr><td colspan=6>No pending applications. New registrations appear here.</td></tr>`};
-$("#af").onchange=draw;draw();
-$("#ap").onclick=e=>{const b=e.target.closest("button");if(!b)return;const r=b.dataset.r,a=APPS.find(x=>x[0]==r);
-if(b.dataset.a=="ok"){APPS=APPS.filter(x=>x[0]!=r);ACTIVE++;toast(a[1]+" approved. Membership number issued and SMS sent.")}
-else if(b.dataset.a=="doc"){a[4]="Missing: requested";toast("Document request sent to "+a[1])}
-else{const why=prompt("Reason for rejecting "+a[1]+" (the applicant will see this):");if(!why)return;APPS=APPS.filter(x=>x[0]!=r);toast("Rejected with reason recorded.")}
-draw()}};
-
-P.member=()=>`<h1>Karibu, Amina</h1>
-<div class="mcard"><div class="av">AM</div><div><h2>Amina Mwakio</h2><small>MDW-0001 · Mapawa Centre · member since 12/03/2019</small><br><span class="st">Active</span> <small>&nbsp;Valid to 27 Dec 2026</small></div><div class="qr">${qr()}<br>placeholder scan code</div></div>
-<div class="acts"><button class="btn" id="pay">Pay with M-Pesa</button><button class="btn navy" data-t="Receipt downloaded as PDF.">Download receipt</button><button class="btn navy" data-t="Welfare claim form opened.">Submit welfare claim</button><button class="btn ghost" data-t="Update request sent to the Secretary for verification.">Update my details</button><button class="btn ghost" data-t="Suggestion form opened.">Send a suggestion</button></div>
-<div class="grid">${stat(kes(400),"Hazina Fund contributed (non-refundable)")+stat(kes(2600),"Welfare contributions to date","","g")+stat(kes(250),"Owing now","200 levy + 50 fine","r")+stat("Yes","Eligible to vote","","g")}</div>
-<div class="g2"><div class="card"><h2>What I owe</h2><table><tr><td>Funeral levy (due 05 Nov)</td><td class="n">200</td></tr><tr><td>Late fine (25%)</td><td class="n">50</td></tr><tr><th>Total</th><th class="n">KES 250</th></tr></table><p style="font-size:.82rem;color:var(--mut)">Think the fine is wrong? <a class="lnk" data-t="Fine review request sent to the committee.">Ask for a review</a></p></div>
-<div class="card"><h2>My payment record</h2>${donut([[80,"#1f6b46","Paid on time"],[20,"#b3261e","Overdue"]])}</div></div>
-<div class="g2"><div class="card"><h2>My family and beneficiaries</h2><div class="ov"><table><tr><th>Name</th><th>Relationship</th><th>Status</th></tr><tr><td>John Mwakio</td><td>Husband</td><td><span class="tag t-g">Verified</span></td></tr><tr><td>Mary Mwakio</td><td>Mother</td><td><span class="tag t-g">Verified</span></td></tr><tr><td>Zawadi Mwakio</td><td>Child</td><td><span class="tag t-y">Birth cert. missing</span></td></tr></table></div><p><button class="btn ghost sm" data-t="Change request sent for administrator verification.">Request a change</button></p></div>
-<div class="card"><h2>Recent payments</h2><div class="ov"><table><tr><th>Date</th><th>For</th><th class="n">KES</th><th></th></tr><tr><td>02 Oct</td><td>Funeral levy</td><td class="n">200</td><td><a class="lnk" data-t="Receipt R-0233 downloaded.">Receipt</a></td></tr><tr><td>04 Aug</td><td>Medical levy</td><td class="n">200</td><td><a class="lnk" data-t="Receipt R-0198 downloaded.">Receipt</a></td></tr><tr><td>12 Mar 2019</td><td>Registration + Hazina</td><td class="n">600</td><td><a class="lnk" data-t="Receipt R-0001 downloaded.">Receipt</a></td></tr></table></div></div></div>
-<div class="card"><h2>Notices</h2><p style="margin:.2rem 0">Full Committee Meeting: 5 Dec 2026 · Annual General Meeting: 27 Dec 2026</p><p style="margin:.2rem 0;color:var(--mut)">You only see your own records here. Medical and confidential case details are never shown to other members.</p></div>`;
-P.member.init=()=>{document.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>toast(b.dataset.t));$("#pay").onclick=()=>{const p=prompt("Phone number for the M-Pesa request (KES 250):","07");if(p&&/^(07|01)\d{8}$/.test(p))toast("Payment request sent to "+p+". Your balance updates after M-Pesa confirms.");else if(p)toast("Enter a valid 10-digit phone number.")}};
+msg("rm","<b>Application APP-0035 received.</b> Eligibility check passed. A KES 600 payment request will be sent to your phone by M-Pesa, then the Secretary and your village leader will review it. You will get an SMS when a decision is made.<br><a class=\"lnk\" href=\"#login\">Go to sign in</a> · <a class=\"lnk\" href=\"index.html\">Back to website</a>")}};
 
 function render(){const k=location.hash.slice(1)||"login",key=P[k]?k:"login";
 if(k=="admin"||k=="member"){location.replace(k=="admin"?"MADEWEG_Admin_Dashboard.html":"MADEWEG_Member_Account.html");return}
-$("#hdr").innerHTML=nav(key=="admin"?"admin":key=="member"?"member":"");
+$("#hdr").innerHTML=nav("");$("#hdr .hdr").insertAdjacentHTML("beforeend",'<a class="out" href="index.html" style="margin-left:auto">← Back to website</a>');
 $("#view").innerHTML=P[key]();P[key].init&&P[key].init();scrollTo(0,0)}
 addEventListener("hashchange",render);render();
 </script>
